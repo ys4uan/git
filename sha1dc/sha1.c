@@ -41,7 +41,8 @@
 
 void sha1_message_expansion(uint32_t W[80])
 {
-	for (unsigned i = 16; i < 80; ++i)
+	unsigned i;
+	for (i = 16; i < 80; ++i)
 		W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
 }
 
@@ -49,9 +50,10 @@ void sha1_compression(uint32_t ihv[5], const uint32_t m[16])
 {
 	uint32_t W[80];
 	uint32_t a, b, c, d, e;
+	unsigned i;
 
 	memcpy(W, m, 16 * 4);
-	for (unsigned i = 16; i < 80; ++i)
+	for (i = 16; i < 80; ++i)
 		W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
 
 	a = ihv[0];
