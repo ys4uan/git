@@ -1595,6 +1595,33 @@ static void configset_iter(struct config_set *cs, config_fn_t fn, void *data)
 	}
 }
 
+void read_early_config(config_fn_t cb, void *data)
+{
+	struct strbuf buf = STRBUF_INIT;
+
+	git_config_with_options(cb, data, NULL, 1);
+
+	/*
+	 * When we are not about to create a repository ourselves (init or
+	 * clone) and when no .git/ directory was set up yet (in which case
+	 * git_config_with_options() would already have picked up the
+	 * repository config), we ask discover_git_directory() to figure out
+	 * whether there is any repository config we should use (but unlike
+	 * setup_git_directory_gently(), no global state is changed, most
+	 * notably, the current working directory is still the same after
+	 * the call).
+	 */
+	if (!have_git_dir() && discover_git_directory(&buf)) {
+		struct git_config_source repo_config;
+
+		memset(&repo_config, 0, sizeof(repo_config));
+		strbuf_addstr(&buf, "/config");
+		repo_config.file = buf.buf;
+		git_config_with_options(cb, data, &repo_config, 1);
+	}
+	strbuf_release(&buf);
+}
+
 static void git_config_check_init(void);
 
 void git_config(config_fn_t fn, void *data)
