@@ -102,7 +102,7 @@ test_expect_success 'config modification does not affect includes' '
 
 test_expect_success 'missing include files are ignored' '
 	cat >.gitconfig <<-\EOF &&
-	[include]path = foo
+	[include]path = non-existent
 	[test]value = yes
 	EOF
 	echo yes >expect &&
