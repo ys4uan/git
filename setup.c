@@ -912,7 +912,8 @@ static enum discovery_result setup_git_directory_gently_1(struct strbuf *dir,
 		if (offset <= min_offset)
 			return GIT_DIR_HIT_CEILING;
 
-		while (--offset > ceil_offset && !is_dir_sep(dir->buf[offset]));
+		while (--offset > ceil_offset && !is_dir_sep(dir->buf[offset]))
+			; /* keep scanning backwards */
 		if (offset <= ceil_offset)
 			return GIT_DIR_HIT_CEILING;
 
